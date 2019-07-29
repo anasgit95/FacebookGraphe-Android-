@@ -1,13 +1,12 @@
     package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telecom.Call;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.AccessToken;
@@ -20,10 +19,33 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,6 +90,7 @@ private CallbackManager callbackManager ;
 
      }
 
+
         @Override
         protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
            callbackManager.onActivityResult(requestCode,resultCode,data);
@@ -88,7 +111,14 @@ private CallbackManager callbackManager ;
                     loadUserProfile(currentAccessToken);
             }
         };
-    private void loadUserProfile(AccessToken newAccesToken )
+
+        @Override
+        protected void onStart() {
+            super.onStart();
+
+        }
+
+        private void loadUserProfile(AccessToken newAccesToken )
     {
         GraphRequest request = GraphRequest.newMeRequest(newAccesToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -107,12 +137,24 @@ private CallbackManager callbackManager ;
                     requestOptions.dontAnimate();
 
                     Glide.with(MainActivity.this).load(image_url).into(circleImageView);
+                    SOC_DB soc_db = new SOC_DB(this);
+                    soc_db.execute(email,first_name,last_name);
+
+
+
+
+
+
+
+
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+
 
 
         Bundle parameters = new Bundle() ;
