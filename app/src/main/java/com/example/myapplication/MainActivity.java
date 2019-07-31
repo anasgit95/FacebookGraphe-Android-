@@ -19,33 +19,12 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -62,10 +41,6 @@ private CallbackManager callbackManager ;
         setContentView(R.layout.activity_main);
 
         loginButton = findViewById(R.id.login_button);
-         txtName = findViewById(R.id.profile_name);
-         txtEmail =findViewById(R.id.profile_email);
-         circleImageView = findViewById(R.id.profile_pic);
-
 
          callbackManager= CallbackManager.Factory.create();
         loginButton.setReadPermissions(Arrays.asList("email","public_profile"));
@@ -102,10 +77,13 @@ private CallbackManager callbackManager ;
             {
                 if(currentAccessToken==null)
                 {
-                    txtName.setText("");
-                    txtEmail.setText("");
-                    circleImageView.setImageResource(0);
-                    Toast.makeText(MainActivity.this,"User Logged out",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(MainActivity.this,Main2Activity.class);
+                    intent.putExtra("email","");
+                    intent.putExtra("nom","");
+                    intent.putExtra("prenom","");
+                    intent.putExtra("image_url","");
+                    startActivity(intent);
+
                 }
                 else
                     loadUserProfile(currentAccessToken);
@@ -131,15 +109,17 @@ private CallbackManager callbackManager ;
                      String id = object.getString("id");
                     String image_url = "https://graph.facebook.com/"+id+ "/picture?type=normal";
 
-                    txtEmail.setText(email);
-                    txtName.setText(first_name +" "+last_name);
-                    RequestOptions requestOptions = new RequestOptions();
-                    requestOptions.dontAnimate();
 
-                    Glide.with(MainActivity.this).load(image_url).into(circleImageView);
+
+
                     SOC_DB soc_db = new SOC_DB(this);
                     soc_db.execute(email,first_name,last_name);
-
+                    Intent intent = new Intent(MainActivity.this,Main2Activity.class);
+                    intent.putExtra("email",email);
+                    intent.putExtra("nom",first_name);
+                    intent.putExtra("prenom",last_name);
+                    intent.putExtra("image_url",image_url);
+                    startActivity(intent);
 
 
 

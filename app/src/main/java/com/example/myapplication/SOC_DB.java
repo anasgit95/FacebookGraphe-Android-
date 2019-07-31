@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ public class SOC_DB  extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String path = "http://192.168.100.45/login.php";
       String email =params[0];
+      String nom = params[1];
+      String prenom =params[2];
         try {
             URL url = new URL(path);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -42,7 +45,9 @@ public class SOC_DB  extends AsyncTask<String, Void, String> {
             httpURLConnection.setDoInput(true);
             OutputStream OS = httpURLConnection.getOutputStream() ;
             BufferedWriter bufferedWriter =  new BufferedWriter(new OutputStreamWriter(OS,"UTF-8"));
-            String data = URLEncoder.encode("email","UTF-8") +"="+ URLEncoder.encode(email,"UTF-8");
+            String data = URLEncoder.encode("email","UTF-8") +"="+ URLEncoder.encode(email,"UTF-8")+"&"+
+                    URLEncoder.encode("nom", "UTF-8") +"="+ URLEncoder.encode(nom, "UTF-8") +"&"+URLEncoder.encode("prenom", "UTF-8") +"="+ URLEncoder.encode(prenom, "UTF-8")
+                    ;
             bufferedWriter.write(data);
             bufferedWriter.flush();
             bufferedWriter.close();
@@ -50,6 +55,9 @@ public class SOC_DB  extends AsyncTask<String, Void, String> {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(IS,"iso-8859-1"));
             String result="";
             String line="";
+
+
+
             while ((line=bufferedReader.readLine()) !=null ) {
                 result+=line ;
             }
